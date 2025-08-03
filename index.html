@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incremental Clicker Simulator</title>
+    <!-- Use Inter font from Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Use a monospaced font from Google Fonts for the modal -->
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- Link to the external stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex items-center justify-center p-4">
+    <!-- Main container for the game content to apply global effects -->
+    <div id="gameContainer" class="relative w-full h-full flex flex-col items-center justify-center transition-filter duration-500 ease-in-out">
+
+        <!-- Main container for the game -->
+        <div class="flex flex-col items-center space-y-8 max-w-lg w-full">
+
+            <!-- Clickable image with animations, now relative to contain the ripple and feedback effect -->
+            <div id="clickerImage" class="relative transition-all duration-200 ease-in-out w-48 h-48 sm:w-64 sm:h-64 md:w-80 md:h-80
+                       hover:scale-105 active:scale-95 cursor-pointer prevent-zoom">
+                <!-- PNG image, now with the image aberration class -->
+                <img id="blobImage" src="assets/images/blob.png" alt="Clickable image" class="w-full h-full object-contain">
+                <!-- New element for the cumulative feedback text -->
+                <span id="cumulativeFeedback" class="feedback-text"></span>
+            </div>
+
+            <!-- Score display section, now using flexbox for better layout -->
+            <div id="scoreDisplayContainer" class="relative flex items-center justify-center">
+                <!-- Small PNG icon next to the score, now with the image aberration class -->
+                <img id="powerIcon" src="assets/images/blob.png" alt="Power icon" class="w-10 h-10 mr-2 object-contain">
+                <p id="scoreDisplay" class="text-5xl sm:text-6xl md:text-7xl font-extrabold text-white transition-all duration-100 ease-out">
+                    0
+                </p>
+                <!-- New shopping cart icon acting as a button -->
+                <span id="shopButton" class="fa-solid fa-cart-shopping text-xl ml-4 cursor-pointer" style="color: #6B7280;"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Shop Modal -->
+    <div id="shopModal" class="modal-overlay">
+        <div class="modal-content">
+            <span id="closeModal" class="close-button">&times;</span>
+            <h2 class="text-3xl font-bold mb-6 text-center text-white">Enchants</h2>
+            
+            <!-- Upgrade 1: Points per click -->
+            <div class="shop-item">
+                <div>
+                    <h3 class="text-xl font-bold flex items-center">
+                        Blobs Refine
+                        <!-- Badge for the level -->
+                        <span id="upgrade1Badge" class="ml-2 px-2 py-1 bg-purple-500 rounded-full text-xs font-bold">
+                            Lv.0
+                        </span>
+                    </h3>
+                    <p class="text-sm text-gray-400">Boost: +20% per level</p>
+                </div>
+                <!-- Updated button to include price, icon, and progress bar -->
+                <button id="buyUpgrade1" class="buy-button">
+                    <div class="progress-bar" id="upgrade1Progress"></div>
+                    <div class="button-content flex items-center">
+                        <img src="assets/images/blob.png" alt="blob icon" class="w-4 h-4 mr-1">
+                        <span id="upgrade1Price">250</span>
+                    </div>
+                </button>
+            </div>
+
+            <!-- Upgrade 2: Spawn boost multiplier -->
+            <div class="shop-item">
+                <div>
+                    <h3 class="text-xl font-bold flex items-center">
+                        Empowered Gems
+                        <!-- Badge for the level -->
+                        <span id="upgrade2Badge" class="ml-2 px-2 py-1 bg-purple-500 rounded-full text-xs font-bold">
+                            Lv.0
+                        </span>
+                    </h3>
+                    <p class="text-sm text-gray-400">Boost: +20% per level</p>
+                </div>
+                <!-- Updated button to include price, icon, and progress bar -->
+                <button id="buyUpgrade2" class="buy-button">
+                    <div class="progress-bar" id="upgrade2Progress"></div>
+                    <div class="button-content flex items-center">
+                        <img src="assets/images/blob.png" alt="blob icon" class="w-4 h-4 mr-1">
+                        <span id="upgrade2Price">500</span>
+                    </div>
+                </button>
+            </div>
+            
+            <!-- Footer note for the modal -->
+            <p class="text-xs text-center text-gray-500 mt-4">Hold to purchase.</p>
+        </div>
+    </div>
+
+    <!-- Link to the external JavaScript file -->
+    <script src="script.js"></script>
+</body>
+</html>

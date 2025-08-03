@@ -1,0 +1,281 @@
+/* All CSS from the previous <style> block is moved here */
+body, html {
+    font-family: 'Inter', sans-serif;
+    /* Disable text selection */
+    user-select: none;
+    cursor: default;
+    /* Make the site unscrollable */
+    overflow: hidden;
+    /* Ensure the body and html take up the full viewport height */
+    height: 100%;
+}
+
+/* --- New Keyframes for Aberration Effects --- */
+/* Keyframes for text shadow aberration */
+@keyframes text-aberration {
+    0% { text-shadow: 1px 0 red, -1px 0 blue; }
+    50% { text-shadow: -1px 0 red, 1px 0 blue; }
+    100% { text-shadow: 1px 0 red, -1px 0 blue; }
+}
+
+/* Keyframes for image filter aberration */
+@keyframes filter-aberration {
+    0% { filter: drop-shadow(1px 0px 0 red) drop-shadow(-1px 0px 0 blue) blur(1px); }
+    50% { filter: drop-shadow(-1px 0px 0 red) drop-shadow(1px 0px 0 blue) blur(1.5px); }
+    100% { filter: drop-shadow(1px 0px 0 red) drop-shadow(-1px 0px 0 blue) blur(1px); }
+}
+/* --- End Aberration Effects --- */
+
+/* Define the glow and scale animation for the score */
+@keyframes glow {
+    0% { 
+        transform: scale(1.2); 
+        text-shadow: 0 0 5px #fefefe, 0 0 10px #fefefe, 0 0 15px #C084FC, 0 0 20px #C084FC, 0 0 25px #C084FC; 
+    }
+    100% { 
+        transform: scale(1);
+        text-shadow: none; 
+    }
+}
+
+/* NEW: Keyframes for the blob scale effect on max spawns */
+@keyframes blob-pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+/* Class to apply the score animation, now with text aberration */
+.score-glow {
+    animation: glow 0.5s ease-in-out;
+}
+
+/* NEW: Class for the blob pulse animation */
+.blob-pulse {
+    animation: blob-pulse 0.3s ease-out;
+}
+
+/* Class for the text aberration effect on the cumulative feedback */
+.feedback-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 28rem;
+    font-weight: bold;
+    color: #2f3a52; /* Updated color */
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0; /* Initially hidden */
+    transition: opacity 0.3s ease; /* Add transition for smoother initial appearance */
+}
+
+/* Define the new ripple animation for the click effect */
+@keyframes ripple {
+    0% { 
+        transform: translate(-50%, -50%) scale(0); 
+        opacity: 1;
+        border-width: 4px;
+    }
+    100% { 
+        transform: translate(-50%, -50%) scale(6); /* Increased scale for a bigger ripple */
+        opacity: 0; 
+        border-width: 0px;
+    }
+}
+
+/* Styling for the new ripple element */
+.ripple-effect {
+    position: absolute;
+    border-radius: 50%;
+    border: 4px solid #C084FC; /* Use a border for the outline effect */
+    width: 150px; /* Increased size */
+    height: 150px; /* Increased size */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none; /* Allows clicks to go through to the image */
+    animation: ripple 0.8s ease-out forwards;
+    z-index: -1; /* Place it behind the main icon */
+}
+
+/* Change the ripple color when max spawns is reached */
+.max-spawns-glow .ripple-effect {
+    border-color: #ffffff;
+    animation: ripple 0.8s ease-out forwards;
+}
+
+/* New animation for the cumulative feedback text fade-out */
+@keyframes feedback-fade-out {
+    0% { 
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.5);
+    }
+}
+
+.feedback-visible {
+    opacity: 1; /* Class to make the feedback visible */
+}
+
+.feedback-fade-out {
+    animation: feedback-fade-out 2s ease-out forwards;
+}
+
+/* Styling for the flying small image */
+.flying-image {
+    position: fixed; /* Use fixed to position relative to viewport */
+    width: 30px;
+    height: 30px;
+    pointer-events: none;
+    z-index: 1;
+    transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
+    border-radius: 50%; /* Make them round to match the blob image */
+    box-shadow: 0 0 10px 5px transparent; /* Initial state, no glow */
+}
+
+/* Animation for the glow effect on spawn */
+@keyframes spawn-glow {
+    0% { box-shadow: 0 0 0px 0px rgba(192, 132, 252, 0.7); }
+    50% { box-shadow: 0 0 10px 5px rgba(192, 132, 252, 0.7); }
+    100% { box-shadow: 0 0 0px 0px rgba(192, 132, 252, 0); }
+}
+
+/* Class to apply the spawn glow animation */
+.spawn-glow {
+    animation: spawn-glow 0.5s ease-out forwards;
+}
+
+/* A specific style to prevent mobile zooming on the clickable image */
+.prevent-zoom {
+    touch-action: manipulation;
+}
+
+/* New CSS for the modal */
+/* Keyframes for the modal animation */
+@keyframes modal-fade-in {
+    0% { opacity: 0; transform: scale(0.95); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes modal-fade-out {
+    0% { opacity: 1; transform: scale(1); }
+    100% { opacity: 0; transform: scale(0.95); }
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(17, 24, 39, 0.5);
+    backdrop-filter: blur(10px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+.modal-overlay.show {
+    display: flex;
+    animation: modal-fade-in 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.modal-overlay.hide {
+    animation: modal-fade-out 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.modal-content {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 1rem;
+    padding: 2rem;
+    max-width: 90%;
+    width: 500px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    font-family: 'Fira Code', monospace; /* Monospaced font for the modal */
+}
+
+.shop-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 0.5rem;
+    transition: all 0.2s ease-in-out;
+}
+
+.shop-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Updated buy button styles for progress bar and price */
+.buy-button {
+    position: relative;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: bold;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+    background-color: #C084FC;
+    color: #fff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden; /* Hide the overflow of the progress bar */
+}
+
+/* New glow effect for the purchase button after a successful purchase */
+@keyframes purchase-glow {
+    0% { box-shadow: 0 0 0 0 rgba(192, 132, 252, 0.7); }
+    50% { box-shadow: 0 0 10px 5px rgba(192, 132, 252, 0.7); }
+    100% { box-shadow: 0 0 0 0 rgba(192, 132, 252, 0); }
+}
+
+.purchase-glow {
+    animation: purchase-glow 0.8s ease-out forwards;
+}
+
+.buy-button .progress-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 0;
+    background-color: rgba(255, 255, 255, 0.3);
+    transition: width 0.1s linear; /* Smooth animation for the bar */
+    z-index: 0;
+}
+
+.buy-button .button-content {
+    position: relative;
+    z-index: 1; /* Ensure text is on top of the progress bar */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.buy-button:hover {
+    background-color: #A855F7;
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+}
+
+.buy-button:disabled {
+    background-color: #4B5563;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.close-button {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    color: #fff;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
