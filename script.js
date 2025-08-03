@@ -337,54 +337,8 @@ function checkDeviceAndWarn() {
     }
 }
 
-// Event listener for mouse entering the image
-clickerImage.addEventListener('mouseenter', () => {
-    clearTimeout(timer);
-});
-
-// Event listener for mouse leaving the image
-clickerImage.addEventListener('mouseleave', () => {
-    clearTimeout(timer);
-
-    toggleMaxSpawnsEffect(false);
-
-    timer = setTimeout(() => {
-        if (pendingPoints > 0) {
-            const currentScore = points;
-            points += Math.round(pendingPoints);
-            animateScore(currentScore, points, 500);
-            animateFeedbackDown(Math.round(pendingPoints), 0, 500);
-            pendingPoints = 0;
-
-            // Reset current click value to the base value after cashing in
-            currentClickValue = baseClickValue;
-            clicksToNextSpawn = initialClicksToNextSpawn;
-            maxSpawnSoundPlayed = false;
-
-            const scoreRect = scoreDisplayContainer.getBoundingClientRect();
-            const targetX = scoreRect.left + (scoreRect.width / 2);
-            const targetY = scoreRect.top + (scoreRect.height / 2);
-
-            flyingImages.forEach(img => {
-                const imgRect = img.getBoundingClientRect();
-                const dx = targetX - (imgRect.left + imgRect.width / 2);
-                const dy = targetY - (imgRect.top + imgRect.height / 2);
-
-                img.style.transform = `translate(${dx}px, ${dy}px)`;
-                img.style.opacity = '0';
-
-                img.addEventListener('transitionend', () => {
-                    img.remove();
-                });
-            });
-
-            flyingImages.length = 0;
-        }
-    }, 2000);
-});
-
-// Event listener for clicking the image
-clickerImage.addEventListener('click', () => {
+// A generic function to handle the "click" logic for both mouse and touch
+function handleImageInteraction() {
     playClickSound();
     pendingPoints += currentClickValue;
     clicksSinceLastSpawn += 1;
@@ -409,7 +363,59 @@ clickerImage.addEventListener('click', () => {
             blobImage.classList.remove('blob-pulse');
         }, { once: true });
     }
+}
+
+// A generic function to handle the "cash in" logic for both mouse and touch
+function handleCashIn() {
+    clearTimeout(timer);
+    toggleMaxSpawnsEffect(false);
+
+    timer = setTimeout(() => {
+        if (pendingPoints > 0) {
+            const currentScore = points;
+            points += Math.round(pendingPoints);
+            animateScore(currentScore, points, 500);
+            animateFeedbackDown(Math.round(pendingPoints), 0, 500);
+            pendingPoints = 0;
+
+            currentClickValue = baseClickValue;
+            clicksToNextSpawn = initialClicksToNextSpawn;
+            maxSpawnSoundPlayed = false;
+
+            const scoreRect = scoreDisplayContainer.getBoundingClientRect();
+            const targetX = scoreRect.left + (scoreRect.width / 2);
+            const targetY = scoreRect.top + (scoreRect.height / 2);
+
+            flyingImages.forEach(img => {
+                const imgRect = img.getBoundingClientRect();
+                const dx = targetX - (imgRect.left + imgRect.width / 2);
+                const dy = targetY - (imgRect.top + imgRect.height / 2);
+
+                img.style.transform = `translate(${dx}px, ${dy}px)`;
+                img.style.opacity = '0';
+
+                img.addEventListener('transitionend', () => {
+                    img.remove();
+                });
+            });
+
+            flyingImages.length = 0;
+        }
+    }, 2000);
+}
+
+// Event listeners for desktop users
+clickerImage.addEventListener('mousedown', handleImageInteraction);
+clickerImage.addEventListener('mouseup', handleCashIn);
+clickerImage.addEventListener('mouseleave', handleCashIn);
+
+// Event listeners for mobile/touchscreen users
+clickerImage.addEventListener('touchstart', (e) => {
+    e.preventDefault(); // Prevents default browser behaviors like zooming
+    handleImageInteraction();
 });
+clickerImage.addEventListener('touchend', handleCashIn);
+clickerImage.addEventListener('touchcancel', handleCashIn);
 
 // Event listeners for the shop buttons
 shopButton.addEventListener('click', showShopModal);
