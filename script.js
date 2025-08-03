@@ -56,27 +56,20 @@ let upgrade1ProgressValue = 0;
 let upgrade2ProgressValue = 0;
 
 // Create a new Audio object for the sound effect when an image spawns
-// Path updated to the new 'assets/sounds' folder
 const spawnSound = new Audio('assets/sounds/spawns.mp3');
 
 // Create a new Audio object for the sound effect on each click
-// Path updated to the new 'assets/sounds' folder
 const clickSound = new Audio('assets/sounds/clicks.mp3');
 
 // Create a new Audio object for the score update sound
-// Path updated to the new 'assets/sounds' folder
 const scoreSound = new Audio('assets/sounds/score.mp3');
 
 // Audio object for the sound when max flying images are reached
-// Path updated to the new 'assets/sounds' folder
 const maxSpawnSound = new Audio('assets/sounds/reachmax.mp3');
 
 // Audio objects for the shop
-// Path updated to the new 'assets/sounds' folder
 const buySound = new Audio('assets/sounds/buy.mp3');
-// Path updated to the new 'assets/sounds' folder
 const errorSound = new Audio('assets/sounds/error.mp3');
-// Path updated to the new 'assets/sounds' folder
 const boughtSound = new Audio('assets/sounds/bought.mp3');
 
 // Function to play the spawn sound effect
@@ -87,7 +80,6 @@ const playSpawnSound = () => {
 
 // Function to play the click sound effect
 const playClickSound = () => {
-    // Path updated to the new 'assets/sounds' folder
     const newClickSound = new Audio('assets/sounds/clicks.mp3');
     newClickSound.play();
     newClickSound.addEventListener('ended', () => {
@@ -210,7 +202,6 @@ function createFlyingImage() {
     playSpawnSound();
 
     const img = document.createElement('img');
-    // Path updated to the new 'assets/images' folder
     img.src = 'assets/images/power.png';
     img.alt = 'Small flying image';
     img.classList.add('flying-image', 'spawn-glow');
@@ -425,100 +416,60 @@ closeMobileWarningButton.addEventListener('click', () => {
     mobileWarningModal.classList.add('hide');
 });
 
-// Hold-to-buy logic for Upgrade 1
-buyUpgrade1Button.addEventListener('mousedown', () => {
-    if (buyUpgrade1Button.disabled) return;
-    upgrade1HoldTimer = setInterval(() => {
-        upgrade1ProgressValue += updateInterval;
-        const progress = (upgrade1ProgressValue / holdDuration) * 100;
-        upgrade1Progress.style.width = `${progress}%`;
-        if (progress >= 100) {
-            clearInterval(upgrade1HoldTimer);
-            buyUpgrade1();
-            resetProgressBar(upgrade1Progress);
-        }
-    }, updateInterval);
-});
-buyUpgrade1Button.addEventListener('mouseup', () => {
-    clearInterval(upgrade1HoldTimer);
-    resetProgressBar(upgrade1Progress);
-});
-buyUpgrade1Button.addEventListener('mouseleave', () => {
-    clearInterval(upgrade1HoldTimer);
-    resetProgressBar(upgrade1Progress);
-});
+// A unified function for starting the "hold-to-buy" timer
+function startHoldTimer(upgrade) {
+    if (upgrade === 1) {
+        if (buyUpgrade1Button.disabled) return;
+        upgrade1HoldTimer = setInterval(() => {
+            upgrade1ProgressValue += updateInterval;
+            const progress = (upgrade1ProgressValue / holdDuration) * 100;
+            upgrade1Progress.style.width = `${progress}%`;
+            if (progress >= 100) {
+                clearInterval(upgrade1HoldTimer);
+                buyUpgrade1();
+                resetProgressBar(upgrade1Progress);
+            }
+        }, updateInterval);
+    } else if (upgrade === 2) {
+        if (buyUpgrade2Button.disabled) return;
+        upgrade2HoldTimer = setInterval(() => {
+            upgrade2ProgressValue += updateInterval;
+            const progress = (upgrade2ProgressValue / holdDuration) * 100;
+            upgrade2Progress.style.width = `${progress}%`;
+            if (progress >= 100) {
+                clearInterval(upgrade2HoldTimer);
+                buyUpgrade2();
+                resetProgressBar(upgrade2Progress);
+            }
+        }, updateInterval);
+    }
+}
 
-// Touch events for mobile support
-buyUpgrade1Button.addEventListener('touchstart', (e) => {
+// A unified function for stopping the "hold-to-buy" timer
+function stopHoldTimer(upgrade) {
+    if (upgrade === 1) {
+        clearInterval(upgrade1HoldTimer);
+        resetProgressBar(upgrade1Progress);
+    } else if (upgrade === 2) {
+        clearInterval(upgrade2HoldTimer);
+        resetProgressBar(upgrade2Progress);
+    }
+}
+
+// Use pointer events for a unified and more reliable hold interaction on all devices
+buyUpgrade1Button.addEventListener('pointerdown', (e) => {
     e.preventDefault();
-    if (buyUpgrade1Button.disabled) return;
-    upgrade1HoldTimer = setInterval(() => {
-        upgrade1ProgressValue += updateInterval;
-        const progress = (upgrade1ProgressValue / holdDuration) * 100;
-        upgrade1Progress.style.width = `${progress}%`;
-        if (progress >= 100) {
-            clearInterval(upgrade1HoldTimer);
-            buyUpgrade1();
-            resetProgressBar(upgrade1Progress);
-        }
-    }, updateInterval);
+    startHoldTimer(1);
 });
-buyUpgrade1Button.addEventListener('touchend', () => {
-    clearInterval(upgrade1HoldTimer);
-    resetProgressBar(upgrade1Progress);
-});
-buyUpgrade1Button.addEventListener('touchcancel', () => {
-    clearInterval(upgrade1HoldTimer);
-    resetProgressBar(upgrade1Progress);
-});
+buyUpgrade1Button.addEventListener('pointerup', () => stopHoldTimer(1));
+buyUpgrade1Button.addEventListener('pointerleave', () => stopHoldTimer(1));
 
-
-// Hold-to-buy logic for Upgrade 2
-buyUpgrade2Button.addEventListener('mousedown', () => {
-    if (buyUpgrade2Button.disabled) return;
-    upgrade2HoldTimer = setInterval(() => {
-        upgrade2ProgressValue += updateInterval;
-        const progress = (upgrade2ProgressValue / holdDuration) * 100;
-        upgrade2Progress.style.width = `${progress}%`;
-        if (progress >= 100) {
-            clearInterval(upgrade2HoldTimer);
-            buyUpgrade2();
-            resetProgressBar(upgrade2Progress);
-        }
-    }, updateInterval);
-});
-buyUpgrade2Button.addEventListener('mouseup', () => {
-    clearInterval(upgrade2HoldTimer);
-    resetProgressBar(upgrade2Progress);
-});
-buyUpgrade2Button.addEventListener('mouseleave', () => {
-    clearInterval(upgrade2HoldTimer);
-    resetProgressBar(upgrade2Progress);
-});
-
-// Touch events for mobile support
-buyUpgrade2Button.addEventListener('touchstart', (e) => {
+buyUpgrade2Button.addEventListener('pointerdown', (e) => {
     e.preventDefault();
-    if (buyUpgrade2Button.disabled) return;
-    upgrade2HoldTimer = setInterval(() => {
-        upgrade2ProgressValue += updateInterval;
-        const progress = (upgrade2ProgressValue / holdDuration) * 100;
-        upgrade2Progress.style.width = `${progress}%`;
-        if (progress >= 100) {
-            clearInterval(upgrade2HoldTimer);
-            buyUpgrade2();
-            resetProgressBar(upgrade2Progress);
-        }
-    }, updateInterval);
+    startHoldTimer(2);
 });
-buyUpgrade2Button.addEventListener('touchend', () => {
-    clearInterval(upgrade2HoldTimer);
-    resetProgressBar(upgrade2Progress);
-});
-buyUpgrade2Button.addEventListener('touchcancel', () => {
-    clearInterval(upgrade2HoldTimer);
-    resetProgressBar(upgrade2Progress);
-});
+buyUpgrade2Button.addEventListener('pointerup', () => stopHoldTimer(2));
+buyUpgrade2Button.addEventListener('pointerleave', () => stopHoldTimer(2));
 
 // Helper function to reset the progress bar
 function resetProgressBar(progressBarElement) {
@@ -539,3 +490,5 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 window.addEventListener('resize', checkDeviceAndWarn);
+
+    
