@@ -15,6 +15,8 @@ const buyUpgrade1Button = document.getElementById('buyUpgrade1');
 const buyUpgrade2Button = document.getElementById('buyUpgrade2');
 const upgrade1Progress = document.getElementById('upgrade1Progress');
 const upgrade2Progress = document.getElementById('upgrade2Progress');
+const mobileWarningModal = document.getElementById('mobileWarningModal');
+const closeMobileWarningButton = document.getElementById('closeMobileWarning');
 
 // Get references to the images to apply the filter
 const blobImage = document.getElementById('blobImage');
@@ -323,6 +325,18 @@ function buyUpgrade2() {
     }
 }
 
+// Function to check if the device is mobile and show a warning
+function checkDeviceAndWarn() {
+    const isMobile = window.innerWidth <= 768; // Common breakpoint for tablets/phones
+    if (isMobile) {
+        mobileWarningModal.classList.remove('hidden');
+        mobileWarningModal.classList.add('show');
+    } else {
+        mobileWarningModal.classList.remove('show');
+        mobileWarningModal.classList.add('hidden');
+    }
+}
+
 // Event listener for mouse entering the image
 clickerImage.addEventListener('mouseenter', () => {
     clearTimeout(timer);
@@ -400,6 +414,10 @@ clickerImage.addEventListener('click', () => {
 // Event listeners for the shop buttons
 shopButton.addEventListener('click', showShopModal);
 closeModalButton.addEventListener('click', hideShopModal);
+closeMobileWarningButton.addEventListener('click', () => {
+    mobileWarningModal.classList.remove('show');
+    mobileWarningModal.classList.add('hide');
+});
 
 // Hold-to-buy logic for Upgrade 1
 buyUpgrade1Button.addEventListener('mousedown', () => {
@@ -511,9 +529,7 @@ function resetProgressBar(progressBarElement) {
 document.addEventListener('DOMContentLoaded', () => {
     updateGameStats();
     updateScoreDisplay();
+    checkDeviceAndWarn();
 });
 
-// Add a touch event listener to prevent page zoom on mobile devices
-clickerImage.addEventListener('touchstart', (event) => {
-    event.preventDefault();
-});
+window.addEventListener('resize', checkDeviceAndWarn);
